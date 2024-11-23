@@ -1,0 +1,29 @@
+version: '3.9'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080" # Прокидываем порт приложения
+    depends_on:
+      - db # Приложение зависит от базы данных
+    environment:
+      CONFIG_PATH: /app/config.env # Указываем путь к конфигурационному файлу
+    volumes:
+      - ./config.env:/app/config.env # Монтируем файл конфигурации
+
+  db:
+    image: postgres:15
+    container_name: wallet_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: WalletDB
+    ports:
+      - "5436:5432" # Прокидываем порт базы данных
+    volumes:
+      - db_data:/var/lib/postgresql/data # Объем для данных базы
+
+volumes:
+  db_data: # Для хранения данных Postgres
